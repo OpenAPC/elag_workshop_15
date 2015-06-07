@@ -1,0 +1,176 @@
+Hacking article processing charges
+========================================================
+author: Najko Jahn, Bielefeld University Library
+date: 9 - 11 June
+
+========================================================
+
+```{r, echo =FALSE}
+knitr::opts_chunk$set(
+  comment = "#>",
+  collapse = TRUE,
+  warning = FALSE, 
+  message = FALSE,
+  echo = FALSE,
+  fig.width = 8,
+  fig.height = 4,5,
+  dpi=300, 
+  out.width="1920px", 
+  height="1080px"
+)
+
+```
+
+# Please introduce yourself!
+
+# What do you expect from the workshop?
+
+
+Objectives
+========================================================
+
+The aim of this workshop is to gain a first understanding of how to collect, process and disseminate APCs paid as Open Data
+
+**Day 1** Considering available skills and tools
+
+**Day 2** Producing useful inputs for the library community
+
+**Day 3** Presentation of workshop results
+
+Motivation
+========================================================
+
+[Bielefeld University Library](http://www.ub.uni-bielefeld.de) has been in charge of local funds to support publications in Open Access Journals since 2008.
+
+The funds [are supported by the DFG](http://www.dfg.de/en/research_funding/programmes/infrastructure/lis/funding_opportunities/open_access_publishing/index.html), thus certain conditions have to be met, e.g:
+- Fee per article may not exceed 2,000 €
+- Yearly reporting and application duties including determination of publication output, fees paid, work programme on how we manage APCs and complementary support 
+
+**Huge workload, which is only available for review :-(**
+
+========================================================
+
+APCs spent by Bielefeld University Library (2012 - 2014)
+
+```{r, cache.lazy=TRUE}
+apc <- read.csv("data/apc_de.csv", header = T, sep =",")
+unibi <- apc[apc$Institution == "Bielefeld U",]
+
+# massage
+
+unibi$publisher <- factor(unibi$publisher, 
+                           levels =  c(rownames(data.frame(rev(sort(tapply(unibi$EURO, list(unibi$publisher), sum)))))))
+
+levels(unibi$publisher)[4:length(levels(unibi$publisher))] <- paste("other (n=", length(unique(unibi$publisher)) - 3, ")", sep="")
+
+my.df <- aggregate(unibi$EURO, list(publisher = unibi$publisher, period = unibi$Period), sum)
+
+require(ggplot2)
+q <- ggplot(my.df, aes(factor(period), x, fill= publisher, group = publisher)) + geom_area(position="stack") + geom_line(position = "stack", colour="black")
+q + scale_fill_manual("Publisher", values = c("#f39c12", "#2980b9", "#2ecc71", "#bdc3c7")) + xlab("Year") + ylab("APCs spent in EURO") + theme_minimal()
+
+```
+
+========================================================
+
+# What is the value of making this information openly available?
+
+# Discuss potential uses and applications!
+
+
+Open Data Initiatives for APCs
+========================================================
+
+- [FWF shares spreadsheet via figshare](http://dx.doi.org/10.6084/m9.figshare.98875).
+
+- [Wellcome Trust](http://blog.wellcome.ac.uk/2014/03/28/the-cost-of-open-access-publishing-a-progress-report/). Crowdsourcing through [Google Spreadsheet](https://docs.google.com/spreadsheets/d/1RXMhqzOZDqygWzyE4HXi9DnJnxjdp0NOhlHcB5SrSZo/edit).
+
+- [JISC APC Pilot](https://www.jisc-collections.ac.uk/Jisc-APC-project/About-the-Jisc-APC-pilot/). [Data modell and search environment](https://github.com/JiscMonitor/allapc).
+
+- [OpenAPC](https://github.com/openapc).
+
+OpenAPC - Aim
+=========================================================
+
+The aim of this repository is:
+
+- to release datasets on fees paid for Open Access journal articles by German Universities under an Open Database License
+- to share a copy of [Directory of Open Access Journals (DOAJ)](http://doaj.org/) journal master list (downloaded January 2014)
+- to demonstrate how reporting on fee-based Open Access publishing can be made more transparent and reproducible across institutions.
+
+Dataset
+==========================================================
+
+```{r, echo=FALSE, cache = FALSE}
+my.apc <- read.csv("data/apc_de.csv", header = TRUE, sep =",")
+```
+
+Information on both open access journal articles and open access publication of articles in toll-access journals ("hybrid") are provided.
+
+In total,  `r format(sum(my.apc$EURO), scientific=FALSE)`€ for  `r nrow(my.apc)` articles were paid by the participating unviversities. Average  fee is `r format(sum(my.apc$EURO)/nrow(my.apc), digits = 5)`€ and the median `r median(my.apc$EURO)`€.
+
+======================================================
+
+Coverage
+
+```{r}
+my.apc <- read.csv("data/apc_de.csv", header = TRUE, sep =",")
+q <- ggplot(my.apc, aes(Institution, EURO)) + geom_boxplot() + geom_point(alpha = 8/10, size = 2,aes(colour =is_hybrid)) + scale_colour_manual(values = c("#000A02", "#DC4E00"))
+
+q +  ylab("Fees paid (in EURO)") + coord_flip() + theme(legend.position="top") + theme_bw()
+```
+
+======================================================
+
+|Source     |variable  |description                     |
+|:--------------|:---------|:-----------------------------------------------|
+|CrossRef   |`publisher` |Title of Publisher             |
+|CrossRef   |`journal_full_title` |Full Title of Journal  |
+|CrossRef   |`issn` |International Standard Serial Numbers (collapsed) |
+|CrossRef   |`issn_print` |ISSN print |
+|CrossRef   |`issn_electronic`  |ISSN electronic        |
+|CrossRef   |`license_ref`  |License of the article     |
+|CrossRef   |`indexed_in_CrossRef`  |Is the article metadata registered with CrossRef? (logical)    |
+|EuropePMC    |`pmid`  |PubMed ID                 |
+|EuropePMC    |`pmcid` |PubMed Central ID         |
+|Web of Science |`ut` |Web of Science record ID             |
+|DOAJ           |`DOAJ` |Is the journal indexed in the DOAJ? (logical)    |
+
+============================================================
+
+# Are there any other sources we can use to enrich and disambiguate metadata on fees paid?
+
+# List three complementary sources!
+
+Tools
+============================================================
+
+We were inspired by the growing landscape of Open Science Tools, especially
+
+1. Version control with Git and collaboration through GitHub
+2. Clients that provide access to bibliographic data ([rOpenSci](https://ropensci.org/), [Librecat](http://librecat.org/))
+3. Authoring tools such as [knitr](http://yihui.name/knitr/) and [R Markdown](http://rmarkdown.rstudio.com/) for automatic report generation
+
+Ram, K. (2013). Git can facilitate greater reproducibility and increased transparency in science. Source Code Biol Med, 8(1), 7. doi:[10.1186/1751-0473-8-7](http://doi.org/10.1186/1751-0473-8-7)
+
+============================================================
+
+![](img/github.png)
+
+============================================================
+
+# What other tools are available to make use of APC data?
+
+# Introduce your favorite Open Data tool!
+
+Preparing Day Two
+============================================================
+
+Potential works:
+
+- Provide a pre-filled spreadsheet for participating libraries
+- Explore interesting patterns in the data
+- Support semantic versioning of the data
+- Create dynamic reporting templates with RStudio
+
+Please, team up!
