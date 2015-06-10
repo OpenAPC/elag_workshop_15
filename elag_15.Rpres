@@ -174,3 +174,36 @@ Potential works:
 - Create dynamic reporting templates with RStudio
 
 Please, team up!
+
+Summarizing Day 1
+=============================================================
+
+**What is the value of making this information openly available?**
+
+- help negotiations with publishers
+- open model from the start helps to keep the model open
+- promoting library services
+- teaches Open Data to library staff
+- bench marking across universities, funders and countries
+
+=============================================================
+
+**Are there any other sources we can use to enrich and disambiguate metadata on fees paid?**
+
+- [http://www.scimagojr.com/](Scimago)
+- article-level metric, e.g. usage
+- author id, e.g. ORCID, however privacy issues may need to be solved
+- links to full text
+- indexed by GoogleScholar
+- kudos
+
+=============================================================
+
+**What other tools are available to make use of APC data?**
+
+- Excel, GoogleDocs
+- Email and shared file storage
+- LibreCat provides a list of ETL-tools
+- Text editors, Sublime, Atom
+
+
