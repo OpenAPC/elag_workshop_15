@@ -190,18 +190,48 @@ Summarizing Day 1
 
 **Are there any other sources we can use to enrich and disambiguate metadata on fees paid?**
 
-- [http://www.scimagojr.com/](Scimago)
+- [Scimago](http://www.scimagojr.com/)
 - article-level metric, e.g. usage
 - author id, e.g. ORCID, however privacy issues may need to be solved
 - links to full text
 - indexed by GoogleScholar
-- kudos
+- [Kudos](https://www.growkudos.com/)
 
 =============================================================
 
 **What other tools are available to make use of APC data?**
 
-- Excel, GoogleDocs
+- Excel, GoogleDocs, Open Refine
 - Email and shared file storage
 - LibreCat provides a list of ETL-tools
 - Text editors, Sublime, Atom
+
+Summarizing Day 2
+=============================================================
+
+Hands-On: adding APC information to the [OpenAPC dataset](https://github.com/OpenAPC/openapc-de/).
+
+Pipeline:
+
+1. clean DOI list
+2. enrich with disambiguated metadata from CrossRef, Europe PMC and DOAJ
+3. merge with main spreadsheet
+4. automatic generation of report
+5. push to github
+6. generate Word Document for the Head Librarian
+
+==============================================================
+
+**Documentation**
+
+https://github.com/OpenAPC/elag_workshop_15
+
+**OpenAPC**
+
+https://github.com/OpenAPC/e
+
+**Contact**
+
+najko.jahn@uni-bielefeld.de
+
+
